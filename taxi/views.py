@@ -123,7 +123,8 @@ class DriverUpdateView(LoginRequiredMixin, generic.UpdateView):
     form_class = DriverLicenseUpdateForm
 
     def form_valid(self, form):
-        messages.success(self.request, "Your profile was successfully updated!")
+        messages.success(self.request,
+                         "Your profile was successfully updated!")
         return super().form_valid(form)
 
 
