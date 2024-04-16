@@ -13,16 +13,16 @@ class DriverLicenseCreateForm(UserCreationForm):
                                                  "last_name")
 
     def clean_license_number(self):
-        license = self.cleaned_data["license_number"]
+        l = self.cleaned_data["license_number"]
         if len(license_number) != 8:
             raise ValidationError(
                 "License number should consist of 8 characters")
-        if not license[:3].isalpha() or not license[:3].isupper():
+        if not l[:3].isalpha() or not l[:3].isupper():
             raise ValidationError(
                 "First 3 characters should be uppercase letters")
-        if license[:3].isupper() and not license[-5:].isdigit():
+        if l[:3].isupper() and not l[-5:].isdigit():
             raise ValidationError("Last 5 characters should be digits")
-        return license
+        return l
 
 
 class DriverLicenseUpdateForm(forms.ModelForm):
@@ -32,14 +32,16 @@ class DriverLicenseUpdateForm(forms.ModelForm):
         fields = ("first_name", "last_name", "license_number")
 
     def clean_license_number(self):
-        license_number = self.cleaned_data["license_number"]
+        l = self.cleaned_data["license_number"]
         if len(license_number) != 8:
-            raise ValidationError("License number should consist of 8 characters")
-        if not license_number[:3].isalpha() or not license_number[:3].isupper():
-            raise ValidationError("First 3 characters should be uppercase letters")
-        if license_number[:3].isupper() and not license_number[-5:].isdigit():
+            raise ValidationError(
+                "License number should consist of 8 characters")
+        if not l[:3].isalpha() or not l[:3].isupper():
+            raise ValidationError(
+                "First 3 characters should be uppercase letters")
+        if l[:3].isupper() and not l[-5:].isdigit():
             raise ValidationError("Last 5 characters should be digits")
-        return license_number
+        return l
 
 
 class CarCreateForm(forms.ModelForm):
