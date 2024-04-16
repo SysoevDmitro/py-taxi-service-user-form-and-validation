@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
+from django.http import HttpResponseRedirect
+from django.shortcuts import render, reverse
 from django.urls import reverse_lazy
 from django.views import generic
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -84,18 +85,20 @@ class CarDeleteView(LoginRequiredMixin, generic.DeleteView):
     success_url = reverse_lazy("taxi:car-list")
 
 
-class AssignMeToCarView(LoginRequiredMixin, generic.View):
-    def post(self, request, pk):
-        car = get_object_or_404(Car, pk=pk)
-        car.drivers.add(request.user)
-        return redirect("car_detail", pk=pk)
+class CarAssignOrRemoveView(LoginRequiredMixin, generic.View):
+    model = Car
 
-
-class RemoveMeFromCarView(LoginRequiredMixin, generic.View):
-    def post(self, request, pk):
+    def post(self, request, pk) -> HttpResponseRedirect:
         car = get_object_or_404(Car, pk=pk)
-        car.drivers.remove(request.user)
-        return redirect("car_detail", pk=pk)
+        if request.user in car.drivers.all():
+            car.drivers.remove(request.user)
+        else:
+            car.drivers.add(request.user)
+        return HttpResponseRedirect(
+            reverse(
+                "taxi:car-detail", kwargs={"pk": pk}
+            )
+        )
 
 
 class DriverListView(LoginRequiredMixin, generic.ListView):
