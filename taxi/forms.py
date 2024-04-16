@@ -13,16 +13,16 @@ class DriverLicenseCreateForm(UserCreationForm):
                                                  "last_name")
 
     def clean_license_number(self):
-        l = self.cleaned_data["license_number"]
-        if len(license_number) != 8:
+        linu = self.cleaned_data["license_number"]
+        if len(linu) != 8:
             raise ValidationError(
                 "License number should consist of 8 characters")
-        if not l[:3].isalpha() or not l[:3].isupper():
+        if not linu[:3].isalpha() or not linu[:3].isupper():
             raise ValidationError(
                 "First 3 characters should be uppercase letters")
-        if l[:3].isupper() and not l[-5:].isdigit():
+        if linu[:3].isupper() and not linu[-5:].isdigit():
             raise ValidationError("Last 5 characters should be digits")
-        return l
+        return linu
 
 
 class DriverLicenseUpdateForm(forms.ModelForm):
@@ -32,16 +32,16 @@ class DriverLicenseUpdateForm(forms.ModelForm):
         fields = ("first_name", "last_name", "license_number")
 
     def clean_license_number(self):
-        l = self.cleaned_data["license_number"]
-        if len(license_number) != 8:
+        linu = self.cleaned_data["license_number"]
+        if len(linu) != 8:
             raise ValidationError(
                 "License number should consist of 8 characters")
-        if not l[:3].isalpha() or not l[:3].isupper():
+        if not linu[:3].isalpha() or not linu[:3].isupper():
             raise ValidationError(
                 "First 3 characters should be uppercase letters")
-        if l[:3].isupper() and not l[-5:].isdigit():
+        if linu[:3].isupper() and not linu[-5:].isdigit():
             raise ValidationError("Last 5 characters should be digits")
-        return l
+        return linu
 
 
 class CarCreateForm(forms.ModelForm):
