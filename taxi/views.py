@@ -1,8 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect
 from django.shortcuts import render
-from django.urls import reverse_lazy, reverse
+from django.urls import reverse_lazy
 from django.views import generic
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404, redirect
@@ -85,20 +84,18 @@ class CarDeleteView(LoginRequiredMixin, generic.DeleteView):
     success_url = reverse_lazy("taxi:car-list")
 
 
-class CarAssignOrRemoveView(LoginRequiredMixin, generic.View):
-    model = Car
-
-    def post(self, request, pk) -> HttpResponseRedirect:
+class AssignMeToCarView(LoginRequiredMixin, generic.View):
+    def post(self, request, pk):
         car = get_object_or_404(Car, pk=pk)
-        if request.user in car.drivers.all():
-            car.drivers.remove(request.user)
-        else:
-            car.drivers.add(request.user)
-        return HttpResponseRedirect(
-            reverse(
-                "taxi:car-detail", kwargs={"pk": pk}
-            )
-        )
+        car.drivers.add(request.user)
+        return redirect("car_detail", pk=pk)
+
+
+class RemoveMeFromCarView(LoginRequiredMixin, generic.View):
+    def post(self, request, pk):
+        car = get_object_or_404(Car, pk=pk)
+        car.drivers.remove(request.user)
+        return redirect("car_detail", pk=pk)
 
 
 class DriverListView(LoginRequiredMixin, generic.ListView):
@@ -123,7 +120,7 @@ class DriverUpdateView(LoginRequiredMixin, generic.UpdateView):
     form_class = DriverLicenseUpdateForm
 
     def form_valid(self, form):
-        messages.success(self.request, 'Your profile was successfully updated!')
+        messages.success(self.request, "Your profile was successfully updated!")
         return super().form_valid(form)
 
 
